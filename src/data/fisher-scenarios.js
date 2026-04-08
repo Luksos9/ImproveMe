@@ -1,0 +1,563 @@
+// Scenarios for ImproveMe.
+// Each scenario drills one principle. Options scored 0–3 (3 = model answer).
+// `idealResponse` is the model answer used by Tier 2 reveal.
+//
+// Data shape is organized by SKILL CATEGORY (what you're training) with each
+// scenario tagged with a `source` book/author. Fisher's sub-concepts
+// (De-escalation, The Pause, etc.) live as `subSkill` inside the top-level
+// skill bucket so the pedagogical label still shows during drills.
+
+// Top-level skill categories. The app's Home grid iterates this list.
+// New books don't create silos — they deepen these existing categories.
+export const SKILL_CATEGORIES = [
+  'Communication',
+  'Assertiveness',
+  'Boundaries',
+  'Social Skills',
+  'Business Thinking',
+  'Emotional Intelligence',
+  'Relationships',
+  'Leadership',
+];
+
+// Fisher-specific sub-skills (kept for the "filter by source" view and so
+// ScenarioExercise can show the specific tactic being taught in the pill).
+export const FISHER_CATEGORIES = [
+  'De-escalation',
+  'Boundaries',
+  'Understanding over winning',
+  'The Pause',
+  'Delivering hard news',
+  'Assertiveness',
+  'No absolutes',
+  'Validation first',
+];
+
+// Shared source metadata for all Fisher scenarios.
+const FISHER_SOURCE = {
+  book: 'The Next Conversation',
+  author: 'Jefferson Fisher',
+};
+
+export const FISHER_SCENARIOS = [
+  {
+    id: 'fisher-001',
+    skillCategory: 'Communication',
+    subSkill: 'De-escalation',
+    source: FISHER_SOURCE,
+    principle: 'Lower your volume and slow your pace',
+    situation: "You're on a client call about a ServiceNow integration delay. The project manager raises their voice: \"This is the THIRD time the deadline has slipped! What is going on over there?!\"",
+    options: [
+      { text: "The requirements have shifted three times in five weeks. If your side gave us changes in writing, we wouldn't be on a third slip. I'm trying to stop the bleeding.", score: 0, feedback: "You matched the heat and pointed back at them. Even when you're right about the requirements, this turns the call into a fight. When they go loud, you go quiet." },
+      { text: "Let me cut the spin. Here's the unvarnished truth on where the build stands, what's blocking the date, and the cleanest path to closing it out this week.", score: 1, feedback: "Confident and direct, but you skipped the part where they feel heard. Facts before feelings is how a frustrated client becomes a hostile one inside two minutes." },
+      { text: "Three slips is on me to explain. Give me five minutes and I'll walk through exactly what's stuck, why it's stuck, and what the cleanest fix actually looks like.", score: 2, feedback: "Owns it and offers structure, which lands. Missing one beat: name the feeling first so the PM stops bracing for a fight before you even get to the facts." },
+      { text: "I hear you, and three in a row is on me. Let me walk you through where we actually are and the one thing I need from your side to make the next date stick.", score: 3, feedback: "Named the feeling and owned the slip in the same breath, and you dropped your tempo half a notch. When their volume rises, yours comes down. Their temperature drops because you didn't match it." },
+    ],
+    idealResponse: "Take one full breath before speaking. Half a step quieter than your normal voice: 'I hear you, and three in a row is on me to explain. Here's exactly where we are, and here's the one thing I need from your side to make the next date real.' The tempo of your voice does more than the words. They'll match your calm inside thirty seconds because you didn't match their heat.",
+    scoringFramework: ['Control', 'Confidence', 'Connection'],
+  },
+  {
+    id: 'fisher-002',
+    skillCategory: 'Boundaries',
+    subSkill: 'Boundaries',
+    source: FISHER_SOURCE,
+    principle: 'Set and hold conversational boundaries',
+    situation: "A family member at dinner starts criticizing your career choices: \"You're almost 30 and you're still just doing computer stuff? When are you going to get a real job like your cousin?\"",
+    options: [
+      { text: "I earn more in a month than most people earn in a quarter, so the 'real job' thing is a bit rich. Want to compare bank statements before you compare jobs?", score: 0, feedback: "You won the argument and torched the rest of the dinner. There is no version of this where proving you make more money becomes a happy memory at the table." },
+      { text: "I know it doesn't look like a normal job from the outside. The work is real, the income pays the bills, and I'm fine with where I'm at right now honestly.", score: 1, feedback: "Polite and defensive at the same time, and you're now stuck explaining your career to your aunt over soup. Every defense invites another question. The boundary is the answer, not the introduction to one." },
+      { text: "I appreciate you caring about my future. I love what I'm building right now and I'd love to tell you about it sometime when neither of us is doing dinner.", score: 2, feedback: "Warm and validating, and it reroutes the conversation. The piece you don't owe them is a future explanation. Sometimes 'is this something we have to agree on' is the whole answer." },
+      { text: "Is this something we have to agree on tonight? *(warm smile, eye contact)* Pass the gołąbki, by the way, Mom outdid herself this year.", score: 3, feedback: "No defending and no explaining. The subject change is the boundary, the warmth is what keeps the relationship intact. Fisher would nod at this." },
+    ],
+    idealResponse: "Warm tone, steady eyes, no edge in your voice: 'Is this something we have to agree on tonight?' Let one second of silence land. Then: 'Pass the gołąbki, Mom outdid herself.' No defending and no explaining. The subject change is the boundary, the warmth keeps the relationship intact. If she pushes: 'Same answer. How's your knee doing since the surgery?' Calm repetition with the same warmth, every time.",
+    scoringFramework: ['Control', 'Confidence', 'Connection'],
+  },
+  {
+    id: 'fisher-003',
+    skillCategory: 'Communication',
+    subSkill: 'Understanding over winning',
+    source: FISHER_SOURCE,
+    principle: 'Shift from winning to understanding',
+    situation: "Alicja says: \"You say you love me but you're always on your laptop. I feel like I'm competing with your work for attention.\"",
+    options: [
+      { text: "That's not fair. I took us to Barcelona last month, I cook for us most nights, I train with you on weekends. How is that not love showing up?", score: 0, feedback: "You produced a receipt list. She didn't say you don't DO things, she said she doesn't FEEL loved. Validate the feeling before you defend the facts. She can't hear a defense yet." },
+      { text: "Everything I'm doing on that laptop is for our future. The work pays for the trips, the apartment, the life we're building together. That IS love, just in a less obvious form.", score: 1, feedback: "Your intent is real, but you explained your WHY before you understood her WHAT. Share intent only after you've heard what they're missing, not as the first move." },
+      { text: "You're right, the laptop has been on a lot lately. I'll close it now and we can do something together tonight. What do you want to do?", score: 2, feedback: "Action without understanding. You'll close the laptop and wonder next week why she still feels the same. The score-3 version finds out what 'feeling loved' actually looks like before fixing anything." },
+      { text: "Help me understand what feeling loved actually looks like for you. I don't want you to ever feel like a tab I forgot to close. Talk to me, what would land?", score: 3, feedback: "You shifted from defending to understanding, and you used her own image (a tab she's competing with) which signals you actually heard her. 'Help me understand' is the side-by-side move." },
+    ],
+    idealResponse: "Close the laptop. Turn your body all the way toward her, knees facing knees. 'I hear you, and I never want you to feel like a tab I forgot to close. Help me understand what feeling loved actually looks like for you. Concrete, not abstract.' Then listen without building a counter-argument while she talks.",
+    scoringFramework: ['Control', 'Confidence', 'Connection'],
+  },
+  {
+    id: 'fisher-004',
+    skillCategory: 'Communication',
+    subSkill: 'The Pause',
+    source: FISHER_SOURCE,
+    principle: 'Use the pause',
+    situation: "During a team meeting, a senior developer publicly says: \"I looked at your code and honestly, I'm not sure how you passed any certifications.\"",
+    options: [
+      { text: "Cool. I've passed seventeen ServiceNow certs first try and shipped four production builds this quarter. Maybe pull the actual diff before throwing that around in front of the team.", score: 0, feedback: "Factually strong, emotionally reactive. You won the credentials fight and lost the room. Ego responses look smaller from the outside, even when the facts are on your side." },
+      { text: "If you have specific feedback on the code, I'm open to hearing it. Throwing 'I'm not sure how you passed your certs' into a meeting isn't really feedback though.", score: 1, feedback: "Better, but you split it: half mature, half clapback. The second sentence undoes the first. Pick one register and stay there, mixing them reads as trying to be the bigger person while still landing a punch." },
+      { text: "*(brief pause, neutral face)* Sure, I'd welcome specific feedback. Walk me through which part you'd actually change and I'll either fix it or explain why it's the way it is.", score: 2, feedback: "Composed and redirected to substance, no ego. The score-3 version has one extra beat: makes him say it twice before you give him the graceful exit. That second beat is the whole move." },
+      { text: "*(three full seconds of silence, eyes steady on him, no smirk)* Could you say that again? I want to make sure I heard you right before I respond.", score: 3, feedback: "Fisher's signature move. The pause gave you control of the room. 'Could you say that again' makes him hear his own words out loud. Most people soften or backtrack the second time." },
+    ],
+    idealResponse: "Three full seconds of deliberate silence. Unaffected face, eyes steady, no smirk, no flinch. Then half a notch quieter than your normal voice: 'Could you say that again?' Let him hear himself. After he hedges or softens: 'Show me what you'd change.' You reclaimed the floor without ever matching his temperature.",
+    scoringFramework: ['Control', 'Confidence', 'Connection'],
+  },
+  {
+    id: 'fisher-005',
+    skillCategory: 'Communication',
+    subSkill: 'Delivering hard news',
+    source: FISHER_SOURCE,
+    principle: 'Label it, then deliver it directly',
+    situation: "You need to tell a Udemy student that their request for a refund on a course they completed 90% of isn't something you can accommodate.",
+    options: [
+      { text: "Hey! Thanks so much for reaching out and for being part of the course! Unfortunately at this time I'm not able to process refunds for completed courses, but I really appreciate your support!", score: 0, feedback: "Corporate fluff buried in exclamation marks. The student knows it's a no, but you made them dig for it. Don't make people excavate the bad news from a pile of warmth." },
+      { text: "I can't process a refund after 90% completion, that's the policy and I keep it consistent across students. I'm sorry that's not the answer you were hoping for.", score: 1, feedback: "Direct but cold, and 'I keep it consistent' makes it about you instead of them. You can hold the line AND acknowledge the person on the other end of it." },
+      { text: "I can't refund a course at 90% completion. What I can offer instead: a free coupon for the next course in the track, or a quick call to walk you through the exam.", score: 2, feedback: "Honest no plus a real alternative, which lands well. Missing one beat: label the bad news upfront so the student isn't waiting for the catch. The score-3 answer adds that one sentence." },
+      { text: "This isn't the answer you wanted, and I'd rather be straight than fluffy: I can't refund at 90% complete. What I can do is comp the next course in the track or get on a 30-minute call. Which would help more?", score: 3, feedback: "Labeled and delivered, then redirected to a real choice. Hard-news framework executed without flinching." },
+    ],
+    idealResponse: "'This isn't the answer you wanted, and I'd rather be straight than fluffy: I can't process a refund at 90% complete. What I can do is comp the next course in the track, or get on a 30-minute call and answer any exam-prep questions you have. Which would actually help more?' Label and deliver, then hand them a real choice.",
+    scoringFramework: ['Control', 'Confidence', 'Connection'],
+  },
+  {
+    id: 'fisher-006',
+    skillCategory: 'Assertiveness',
+    subSkill: 'Assertiveness',
+    source: FISHER_SOURCE,
+    principle: 'Say it with confidence, not aggression',
+    situation: "A colleague keeps interrupting you during a planning session. They've cut you off three times in the last five minutes.",
+    options: [
+      { text: "*(raise volume to talk over them)* As I was saying before being interrupted again, the integration timeline depends on the API freeze, which we discussed last week.", score: 0, feedback: "Fighting for the floor with volume. Now it's a competition and the meeting watches you both lose. When they go loud, you go quiet. The person who controls the volume controls the conversation." },
+      { text: "Can you please let me finish? You've cut me off three times in five minutes and it's making it hard to actually walk through the design.", score: 1, feedback: "You named it, but 'please' as a plea and 'making it hard' frames you as the one struggling. Assertive without aggressive means stating the limit calmly, not asking for mercy." },
+      { text: "*(wait for the next interruption, then calmly)* Hold on a second, let me finish that thought first and then I want to hear what you've got.", score: 2, feedback: "Solid. Calm, direct, no apology, includes them. The score-3 version adds one piece: a small validation up front so the interrupter doesn't feel benched." },
+      { text: "*(pause mid-sentence, hold eye contact, drop volume one notch)* I want to hear your thoughts. Let me finish this point first, then I'm all yours.", score: 3, feedback: "The pause and the lower volume did the work. You validated them and set the limit in the same breath. Fisher's confidence is calm and clear, no need to prove it." },
+    ],
+    idealResponse: "When they cut in next, do not talk over them. Pause mid-sentence and hold eye contact for one beat. Drop your volume one notch below normal. Calm: 'I want to hear your thoughts. Let me finish this point first, then I'm all yours.' Then finish your sentence at your original cadence. Calm is the assertion.",
+    scoringFramework: ['Control', 'Confidence', 'Connection'],
+  },
+  {
+    id: 'fisher-007',
+    skillCategory: 'Communication',
+    subSkill: 'No absolutes',
+    source: FISHER_SOURCE,
+    principle: "Drop 'always' and 'never' from conflict vocabulary",
+    situation: "You're frustrated because your friend canceled plans for the third time this month. You want to address it.",
+    options: [
+      { text: "You always cancel on me. You never follow through on anything you commit to and I'm starting to feel like a backup plan in your life.", score: 0, feedback: "Two absolutes in two sentences. 'Always' and 'never' guarantee they stop hearing the real point and start defending against the exaggeration. Drop the absolutes, the actual complaint lands harder without them." },
+      { text: "I'm starting to feel like you don't really value our friendship. Three cancellations in a month is hard not to read as a sign of something bigger.", score: 1, feedback: "Better than 'you always', but you jumped from behavior to motive without checking. 'Help me understand what's going on' before you assign meaning to the pattern." },
+      { text: "Hey, this is the third one this month. I'm not making it bigger than it is, but I want you to know it's been on my mind for a couple of weeks.", score: 2, feedback: "Specific and vulnerable, no absolutes. The score-3 version adds an invitation to find a rhythm that actually works for them, instead of just naming the pattern and letting it sit." },
+      { text: "Three in a month. I'm not mad and I don't want to make it bigger than it is, but it matters to me. Is something going on, or can we figure out a rhythm that actually works?", score: 3, feedback: "Specific count, vulnerable frame, no absolutes, ends with an invitation instead of an accusation. The friend can engage with the real thing instead of defending against the word 'never'." },
+    ],
+    idealResponse: "'Hey, three in a month. I'm not mad and I don't want to make this bigger than it is, but it matters to me. Is something going on, or can we figure out a rhythm that actually works for you?' Specific count, vulnerable frame, no 'always', invitation instead of accusation. Now they can engage with the real thing instead of defending against the word 'never'.",
+    scoringFramework: ['Control', 'Confidence', 'Connection'],
+  },
+  {
+    id: 'fisher-008',
+    skillCategory: 'Emotional Intelligence',
+    subSkill: 'Validation first',
+    source: FISHER_SOURCE,
+    principle: 'Validate before you advocate',
+    situation: "Your teammate proposes a solution to a ServiceNow workflow problem that you know won't work because of a technical constraint they're not aware of.",
+    options: [
+      { text: "That's not going to work. You're missing the ACL restrictions on that table, which would block half the use cases. Let me show you the right way to do this.", score: 0, feedback: "'You're missing' plus 'the right way' positions you as the expert correcting a student. Same information, completely different reception when you validate first." },
+      { text: "Hmm, I'm not sure that approach handles the ACL piece. Let me think about it and circle back to you later today after I've looked at the table again.", score: 1, feedback: "You hedged and pushed the conversation to later. The teammate now has the rest of the day to commit further to a design that won't work. Gentle now beats harsh later, every time." },
+      { text: "Good direction. One thing to watch is the ACL on that table, which I hit on the Generali build last quarter. Want me to send you what I learned about it?", score: 2, feedback: "Validates the direction and shares context, which lands well. The score-3 version adds the partnership layer: solving it together instead of handing them notes." },
+      { text: "I can see the logic and the instinct is right. The one thing I'd pressure-test is the ACL on that table, I hit the same wall on Generali last quarter. Want to sketch it together?", score: 3, feedback: "Validated their reasoning AND named the constraint without making them wrong. The 'want to sketch it together' is what turns a correction into a collaboration. Same fact, different room." },
+    ],
+    idealResponse: "'I can see the logic and the instinct is right. The one thing I'd pressure-test is the ACL on that table, I hit the same wall on the Generali build last quarter. Want to sketch it out together and see if we can route around it, or should we look at it from a different angle?' Validate the instinct, then introduce the constraint inside an invitation to work it together.",
+    scoringFramework: ['Control', 'Confidence', 'Connection'],
+  },
+
+  // ─── De-escalation (expanded) ─────────────────────────────────────────────
+
+  {
+    id: 'fisher-009',
+    skillCategory: 'Communication',
+    subSkill: 'De-escalation',
+    source: FISHER_SOURCE,
+    principle: 'When the tone goes up, bring yours down',
+    situation: "Your Generali team lead pastes a screenshot of a misconfigured update set into the public #team-servicenow Slack channel: \"@everyone look at this. @lukasz this is exactly what we told you not to do. Can you explain to the entire team why you ignored the review process?\"",
+    options: [
+      { text: "Really, @everyone? Could've DM'd me before going public with this. That's not how a healthy team handles a misconfig and you know it.", score: 0, feedback: "You tone-policed him in the same channel he chose. The room now watches you fight about HOW he raised it instead of the actual issue. Don't fight the medium, control your response inside it." },
+      { text: "That's a mischaracterization. I did follow the review process, the issue was a scope miscommunication on the change request, not me ignoring the team or the gates we agreed on.", score: 1, feedback: "You may be right on the facts, but defending publicly in the same channel guarantees escalation. Move it sideways: offer to take it to a thread or a call with the actual evidence." },
+      { text: "Let me take a look at the screenshot. I'll post the root cause and the fix in this thread within fifteen minutes so the team has the full picture.", score: 2, feedback: "Neutral and buys time, which is fine. Missing the warmth move at the front. The score-3 answer absorbs the heat with a single calm sentence before promising the fix." },
+      { text: "Good catch. Let me own the piece that's actually mine, I'll post root cause and fix in this thread within fifteen minutes. Happy to hop on a quick call after to tighten the review gap that let this slip through.", score: 3, feedback: "Absorbed the heat, took the piece that's yours, promised a public answer, suggested a fix to the process. When they go loud and public, you go calm and specific. The room becomes your ally instead of his." },
+    ],
+    idealResponse: "Reply in-thread within sixty seconds, calm and short: 'Good catch. Let me own the piece that's actually mine, I'll post root cause and fix here within fifteen minutes so everyone sees it. Happy to hop on a ten-minute call after to tighten whatever review gap let this slip through.' You absorbed the heat without defending, promised a concrete public answer, shifted the conversation from blame to improvement, and you didn't say 'but' or 'actually' once.",
+    scoringFramework: ['Control', 'Confidence', 'Connection'],
+  },
+  {
+    id: 'fisher-010',
+    skillCategory: 'Communication',
+    subSkill: 'De-escalation',
+    source: FISHER_SOURCE,
+    principle: 'When emotion rises, resist solving and lower the temperature',
+    situation: "Alicja comes home from the office looking wrecked. She drops her bag: \"I'm so done with Magda. She took credit for my client presentation AGAIN. I'm this close to quitting. I can't with this company anymore.\"",
+    options: [
+      { text: "Babe, come on. You say this every month and the answer is always the same: if it's that bad, find a new job. Otherwise we're just on the merry-go-round again.", score: 0, feedback: "You invalidated the moment AND used 'every month' as an absolute. She came home wrecked and you turned it into a pattern lecture. Never match frustration with dismissal." },
+      { text: "Have you talked to HR? You need to document the dates, save the slack messages, and send your manager a paper trail before this happens a fourth time.", score: 1, feedback: "You jumped to solution mode before she finished feeling. It reads as 'stop crying, start fixing', even though you meant well. Ask 'do you want to vent or solve' before suggesting either." },
+      { text: "I'm sorry, that's unfair, that's twice now with the same person. Do you want to vent about it or do you want me to help you think through what to do next?", score: 2, feedback: "Validated and offered agency, which is solid. The score-3 version skips the meta-question and just creates space. With Alicja, in this moment, venting is the right default and you don't need to ask permission." },
+      { text: "Drop the bag. Come sit with me. That sounds awful, tell me what happened, I just want to hear it before we do anything else.", score: 3, feedback: "Created space and refused to solve. The invitation to unload is the whole move. Lower the temperature first, the fixing comes later if she asks." },
+    ],
+    idealResponse: "Put the laptop down. Make eye contact. 'That sounds awful. Drop the bag, come sit with me.' Let her unload without interrupting and without fixing. If she asks for advice later, you'll know. Lowering the temperature is the help, the fixing is optional.",
+    scoringFramework: ['Control', 'Confidence', 'Connection'],
+  },
+  {
+    id: 'fisher-011',
+    skillCategory: 'Communication',
+    subSkill: 'De-escalation',
+    source: FISHER_SOURCE,
+    principle: "Don't return fire, change the medium",
+    situation: "A Udemy student leaves a 1-star review: \"Complete waste of money. These questions are fake and written by someone who's never worked in ServiceNow.\" Then they DM you: \"Refund me now or I'm posting this review to every ServiceNow LinkedIn group.\"",
+    options: [
+      { text: "Your review is factually wrong. I've worked with ServiceNow for ten years and passed every cert first try. Threatening to spread it to LinkedIn groups isn't going to change that.", score: 0, feedback: "You matched their hostility with credentials. Now it's a public fight, and fights with strangers on the internet never end with the other person saying 'you know what, you're right'." },
+      { text: "Let me look into the questions you're flagging and I'll get back to you. I'd also ask you to hold the LinkedIn post until we've actually talked about it.", score: 1, feedback: "Avoidance with a side of negotiating the threat. While you delay, they're drafting the post. The conversation you delay today is the conflict you face tomorrow, bigger and louder." },
+      { text: "Per the refund policy I can't process this, but I'm happy to look at the specific questions you had issues with and fix them if anything's actually wrong.", score: 2, feedback: "Okay, but you led with the no, which guarantees they stay angry. The score-3 version leads with the empathy and puts the refund commitment at the end where it lands soft." },
+      { text: "I hear how frustrated you are. I'd rather understand what went wrong than argue about it. Send me the question numbers and I'll check each one against the docs. If any are wrong, I'll fix them AND refund you.", score: 3, feedback: "Dissolved the fight by refusing to have one. You validated the emotion AND removed the thing they were threatening with in the same move. Fisher de-escalation masterclass." },
+    ],
+    idealResponse: "DM reply within the hour: 'I hear how frustrated you are, and that's not the experience I want anyone to have in my course. Before we talk refund, I want to know which questions felt wrong. Send me the numbers and I'll check each one against the official ServiceNow docs. If any are wrong, I fix them immediately and thank you publicly for the catch. If you still want a refund after that, I'll process it.' You removed the fight, offered a collaborative path, and the 1-star fire usually goes out before it spreads.",
+    scoringFramework: ['Control', 'Confidence', 'Connection'],
+  },
+
+  // ─── Boundaries (expanded) ────────────────────────────────────────────────
+
+  {
+    id: 'fisher-012',
+    skillCategory: 'Boundaries',
+    subSkill: 'Boundaries',
+    source: FISHER_SOURCE,
+    principle: 'A clear no is more respectful than a resentful yes',
+    situation: "Your sister calls you on a Tuesday afternoon. You're deep in a Dormakaba integration shipping tomorrow. \"Hey! Quick thing, can you help me fix something on my flight schedule app? It's SUPER quick, I swear. Like 10 minutes. Please?\"",
+    options: [
+      { text: "Fine, what is it? Send me the link or whatever, I'll see what I can do once I'm done with this thing I'm in the middle of.", score: 0, feedback: "A yes through gritted teeth, the worst kind. You'll resent the task and she'll feel the tension, '10 minutes' becomes an hour every time. A reluctant yes poisons both people." },
+      { text: "I'm slammed today, can you maybe ask one of your developer friends? They'd probably be faster than me anyway and I don't want to slow you down.", score: 1, feedback: "You deflected the boundary onto her by making her the problem for asking. Own your no, don't outsource it to a hypothetical other person." },
+      { text: "I can't right now, I'm on a Dormakaba deadline, but send me what you're stuck on and I'll try to take a look after work tonight.", score: 2, feedback: "Soft yes that will bleed into your evening AND set the precedent that 'urgent' equals immediate access. The score-3 answer protects tonight and still gives her real help tomorrow." },
+      { text: "I can't today, mid-deadline until tomorrow afternoon. Send me what you're stuck on and I'll block proper time after 6pm tomorrow. I want to help and I'll do a better job when my brain isn't split.", score: 3, feedback: "A clear no with a warm alternative. 'I can't today' plus 'here's when I can' is how warmth and limits live in the same sentence. She gets real help and you protect what's on fire." },
+    ],
+    idealResponse: "'I can't today, I'm mid-deadline until tomorrow afternoon. Send me what you're stuck on in a message and I'll block proper time after 6pm tomorrow. I want to help, and I'll do a better job when my brain isn't split.' Clear no, specific next step, warm. She gets real help and you protect the work that's on fire.",
+    scoringFramework: ['Control', 'Confidence', 'Connection'],
+  },
+  {
+    id: 'fisher-013',
+    skillCategory: 'Boundaries',
+    subSkill: 'Boundaries',
+    source: FISHER_SOURCE,
+    principle: "The boundary is complete on its own, it doesn't need defending",
+    situation: "Sunday dinner at your parents' place in Kotki. Your aunt leans in: \"So. When are you and Alicja finally getting married? Your cousin Kasia had two kids by your age. We're not getting any younger, you know.\"",
+    options: [
+      { text: "That's none of your business, ciociu. We've had this conversation every Christmas and I'm tired of explaining my life to people who don't actually live it with me.", score: 0, feedback: "It IS a boundary, but the coldness punishes her for asking and stains the rest of the dinner. You can hold the line without making her pay a price for bringing it up." },
+      { text: "We're happy the way we are. Marriage is honestly more of a social construct than a relationship, and the kids thing isn't on the table for us right now anyway.", score: 1, feedback: "You just opened a debate about the institution of marriage over soup. Oversharing your worldview is another form of defending yourself, and the boundary should be the whole message, not the intro to a philosophy lecture." },
+      { text: "When we're ready, ciociu, and you'll be one of the first to know. Can we please talk about something else tonight? How was your trip to Sopot last weekend?", score: 2, feedback: "Polite and redirects, but 'when we're ready' invites the exact same question next year. The score-3 version closes the topic completely instead of deferring it to another dinner." },
+      { text: "*(warm smile, no edge)* That's not something I'll talk about at dinner, ciociu. What's in the soup? Is this Mom's recipe or did you change something this year?", score: 3, feedback: "Closed the topic warmly, kept the dinner intact, and the subject change IS the boundary. No defending and no explaining. Fisher would nod at this." },
+    ],
+    idealResponse: "Warm smile and no edge in your voice: 'That's not something I'll talk about at dinner, ciociu.' Without a beat: 'What's in the soup? Is this Mom's recipe or did you change something?' No justification and no explanation. The subject change is the boundary, the warmth keeps the relationship intact. If she pushes: 'Same answer, ciociu. How was your knee after the surgery?' Calm repetition with the same warmth, every time.",
+    scoringFramework: ['Control', 'Confidence', 'Connection'],
+  },
+  {
+    id: 'fisher-014',
+    skillCategory: 'Boundaries',
+    subSkill: 'Boundaries',
+    source: FISHER_SOURCE,
+    principle: 'Hold your off-time like you hold a contract',
+    situation: "Your PwC contact pings you on WhatsApp at 9:47 PM on a Sunday: \"Hey Lukasz sorry to bother, can you jump on Teams for 15 min? There's a small thing for tomorrow's steerco I want to sanity-check with you.\"",
+    options: [
+      { text: "Sure, give me 5, let me just grab my laptop and fire up Teams. What's the angle you want me to sanity-check so I can think about it beforehand?", score: 0, feedback: "You just taught them that Sunday night is fair game forever. The next ask will be bigger and arrive faster. Every immediate yes sets the new normal for what they can expect." },
+      { text: "I'd rather not tonight if it's not actually on fire. Can it wait until morning when I can give it proper attention instead of half-asleep thoughts?", score: 1, feedback: "You asked permission for your own time. That's not a boundary, that's a request. State your limit, don't petition for it. 'I'd rather not' is you hoping they'll let you off the hook." },
+      { text: "I'm not really available tonight. Is it urgent enough that I should make an exception, or can we handle it first thing tomorrow morning from the office?", score: 2, feedback: "Tentative and leaves the door open for guilt. 'Should I make an exception' hands them the steering wheel on your Sunday night. The score-3 answer gives the same info in a definitive frame." },
+      { text: "I'm offline until 8am tomorrow. Drop what you need in a message and I'll review it the moment I'm back, we can hop on at 8:15 if it still needs a call.", score: 3, feedback: "Clear boundary and a constructive alternative, reframing the ask into async. You're not refusing to help, you're refusing to help in a way that burns you out on a Sunday night." },
+    ],
+    idealResponse: "'I'm offline until 8am tomorrow. Drop what you need in a message, I'll review it the moment I'm online and we can hop on at 8:15 if it still needs a call. If it's a real production emergency, call me now, otherwise I'll see you in the morning.' Firm but not precious. You're teaching them how to work with you long-term and they'll respect the boundary because it came with a usable alternative.",
+    scoringFramework: ['Control', 'Confidence', 'Connection'],
+  },
+
+  // ─── Understanding over winning (expanded) ───────────────────────────────
+
+  {
+    id: 'fisher-015',
+    skillCategory: 'Communication',
+    subSkill: 'Understanding over winning',
+    source: FISHER_SOURCE,
+    principle: 'When they take a shot at your work, curiosity disarms better than defense',
+    situation: "At a Warsaw tech meetup, Krzychu says loudly (you and four other devs listening): \"ServiceNow is honestly just SAP for IT people. Overpriced, slow, and the 'low-code' thing is marketing garbage. Nobody serious uses it.\"",
+    options: [
+      { text: "That's a wildly uninformed take. 80% of the Fortune 500 runs on ServiceNow. Have you actually touched the platform or are you just repeating stuff you read on Reddit?", score: 0, feedback: "You attacked his intelligence in front of the group. Even when you're right, the onlookers just saw you get defensive and bite back. Defending your work aggressively is how you lose the audience you were trying to impress." },
+      { text: "Fair, parts of it are bloated and the low-code marketing is oversold on the website. The Flow Designer is actually solid though once you get past the initial learning curve.", score: 1, feedback: "You conceded way too fast and skipped the chance to learn what he actually saw. You can stay curious without abandoning your position. 'Interesting' is not the same as agreeing with him on the main point." },
+      { text: "That's one way to see it. I work with it every day and my experience doesn't match yours at all. The Fortune 500 adoption is real and the contractor rates are serious.", score: 2, feedback: "Polite pushback, but you missed the opportunity to pull him into a real conversation. The score-3 version finds out where his opinion came from, which might be the actually interesting part of the exchange." },
+      { text: "When's the last time you actually used it? I'm asking because there might be parts we agree on, and I want to know if we're talking about the same version of the product.", score: 3, feedback: "Genuine curiosity with no sarcasm, opens space to find common ground. 'Help me understand' energy applied to a public jab: you disarm him AND look like the most mature person in the room." },
+    ],
+    idealResponse: "Lean back, genuinely curious, no smirk: 'Real question, when did you last actually touch it? I'm asking because there's probably parts we agree on, and I want to know if we're talking about the same version. If your take is from 2018, we're basically on the same side.' Now he has to get specific, you've shown you're not defensive, and the onlookers see someone handle a jab with confidence instead of ego.",
+    scoringFramework: ['Control', 'Confidence', 'Connection'],
+  },
+  {
+    id: 'fisher-016',
+    skillCategory: 'Communication',
+    subSkill: 'Understanding over winning',
+    source: FISHER_SOURCE,
+    principle: "Ask what they're optimizing for before defending what you built",
+    situation: "In a design review, the Generali lead architect says: \"Your model is wrong. You've got the user table relating directly to the asset table, that's a mess. You need to go through cmdb_ci_user instead. Rebuild it.\"",
+    options: [
+      { text: "No, you're wrong. I already tested the cmdb_ci_user route and it came out 3x slower in my benchmark last week. I have the numbers right here if you want to see them.", score: 0, feedback: "Technically possibly right, but you just told a senior architect 'no, you're wrong' in front of his team. Being right and being effective are two different skills. You won the point and lost relationship capital you'll need later." },
+      { text: "It works, I tested it and the performance numbers are solid. Can we move on to the next section of the review? We've got a lot of ground to cover this morning.", score: 1, feedback: "Dismissive and ends the conversation without resolving it. The unresolved disagreement comes back louder next week, probably in front of more people. Avoiding the pushback now means inviting the bigger pushback later." },
+      { text: "I hear you. Let me share my performance data and we can decide together what route makes more sense for the long-term architecture on this integration.", score: 2, feedback: "Good collaborative framing, but you skipped understanding his concern first. He might not care about read-latency. He might care about long-term maintainability, which your performance data doesn't address at all." },
+      { text: "Walk me through what you're optimizing for. I chose this path because of a read-latency issue in testing, but I want to make sure we're both solving for the same thing before I push back.", score: 3, feedback: "You shifted from defending to understanding his priority first. Now when you bring your data, it lands in context. Understand their 'why' before you defend your 'what'." },
+    ],
+    idealResponse: "'Before I defend the design, what's the constraint you're prioritizing here? I picked the direct join because of a read-latency issue I hit in testing, but if long-term maintainability matters more to you, we might need to trade performance for it. Walk me through your angle and I'll bring my numbers after.' Now you're on the same team, the data lands harder, and if you're wrong, you find out without anyone getting embarrassed.",
+    scoringFramework: ['Control', 'Confidence', 'Connection'],
+  },
+  {
+    id: 'fisher-017',
+    skillCategory: 'Communication',
+    subSkill: 'Understanding over winning',
+    source: FISHER_SOURCE,
+    principle: 'Drop the counter-argument building in your head and let her finish',
+    situation: "Alicja, mid-conversation: \"You don't really listen to me anymore. You're always doing that thing where you nod and wait for me to stop so you can say whatever you were already planning to say.\"",
+    options: [
+      { text: "That's literally what listening is. I process what you said, then respond with something related to the topic. Give me a specific example of me doing the thing you're describing.", score: 0, feedback: "You went into debate mode AND demanded evidence. She didn't come for a trial. 'Give me an example' to an emotional point makes the person feel auditioned, not heard." },
+      { text: "Okay, I hear you, I'll listen more. I promise I'll work on it starting tonight, I don't want to be that guy with you. Just tell me when I do it and I'll catch myself.", score: 1, feedback: "Empty promise that fixes nothing because you didn't understand what was broken. You'll repeat the pattern inside a week because 'listen more' isn't an action plan, it's a vibe dressed up as a commitment." },
+      { text: "I'm sorry. I've been distracted lately, work has been a lot and I know I've brought some of that home with me. I'll try to be more present when we're talking.", score: 2, feedback: "Warm but deflects to context. 'Work has been a lot' is a softer form of 'it's not really my fault' and she'll hear it that way even if you don't mean it. The score-3 version doesn't flinch from her actual point." },
+      { text: "That lands. I want to actually hear you, can you say more about what it feels like when I do it? I don't want to be that guy with you and I'd rather understand before I try to fix it.", score: 3, feedback: "You validated without denying, and you invited her to go deeper instead of rebutting. 'That lands' plus 'tell me more' is the exact opposite of the trap she just described." },
+    ],
+    idealResponse: "Put the phone face-down. Turn toward her. 'That lands. I don't want to be that guy with you. Can you say more about what it feels like from your side, like, when did I last do the nod-and-wait thing? I want to actually hear it, not fix it.' No denial and no defense. You ask for more, specifically, so she knows you meant it. Fixing the behavior comes later, understanding comes first.",
+    scoringFramework: ['Control', 'Confidence', 'Connection'],
+  },
+
+  // ─── The Pause (expanded) ────────────────────────────────────────────────
+
+  {
+    id: 'fisher-018',
+    skillCategory: 'Communication',
+    subSkill: 'The Pause',
+    source: FISHER_SOURCE,
+    principle: 'Silence is power, filler is panic',
+    situation: "You're presenting the architecture for the Dormakaba integration to their steering committee (7 execs, VP on video). The VP interrupts: \"Wait, how does this handle GDPR data residency if a user's assets cross from the EU tenant to the APAC tenant?\"",
+    options: [
+      { text: "Uhh, I mean, I think we have some handling for that, yeah, I'd have to check the specifics but I'm pretty sure we covered it somewhere in the design phase earlier on.", score: 0, feedback: "Filler words plus fake confidence is the worst combination on a steerco call. Every 'uhh' and 'I think' undoes your credibility in front of seven execs. Silence is better than filler, every single time." },
+      { text: "That's actually out of scope for this phase of the rollout. We'd address cross-tenant residency in phase two, not the current release we're walking through this morning.", score: 1, feedback: "Evasive. The VP will push back and you'll look like you're dodging the question. Dodging reads as hiding, and hiding in a steerco is worse than admitting you haven't modeled it yet." },
+      { text: "Let me take that one offline and come back to you with a proper answer. I want to make sure I give you the right response rather than guess on something that specific right now.", score: 2, feedback: "Safe and professional, but generic. The score-3 version does the same thing with more weight because of the pause and the specific commitment attached to it. Same content, stronger frame." },
+      { text: "Good question, give me a second. Honestly, I haven't modeled that cross-tenant path yet. I'll have a concrete answer by end of day tomorrow, should I send it to the whole committee?", score: 3, feedback: "The pause plus honest admission plus concrete follow-up is more credible than any improvised answer you could have stitched together. Fisher's signature: silence owned, then a clean honest sentence." },
+    ],
+    idealResponse: "Do NOT fill the silence. Steady eye contact, calm voice: 'Good question, give me a second to think.' Count three full seconds in your head. Then: 'Honestly, I haven't walked through that specific cross-tenant path yet. I'll model it tomorrow morning and send the committee a one-page answer by end of day. Does that work, or do you need it sooner?' A real pause followed by honesty and a concrete deliverable lands 10x more credible than any on-the-fly answer.",
+    scoringFramework: ['Control', 'Confidence', 'Connection'],
+  },
+  {
+    id: 'fisher-019',
+    skillCategory: 'Communication',
+    subSkill: 'The Pause',
+    source: FISHER_SOURCE,
+    principle: "Don't reply from ego, reply from the decision you'd make tomorrow",
+    situation: "Someone with a 40k-follower LinkedIn account comments under your post about CIS-Discovery tips: \"These 'tips' are superficial garbage. You're a fake guru selling worthless practice tests to people who'll never actually work in ServiceNow. Stop polluting the feed.\"",
+    options: [
+      { text: "Thanks for the engagement! My courses have 11,000+ students and a 4.6 rating across thousands of reviews. Feel free to check the testimonials before calling someone a fake in public.", score: 0, feedback: "Classic reactive clapback dressed up as 'thanks for the engagement'. You just fed a troll who now has free ammo AND credentials to attack. A status match looks petty to onlookers, even when you technically win it." },
+      { text: "Respectfully disagree. If you think something specific is wrong with the tips, happy to hear it, but 'fake guru' isn't really a conversation starter as a comment.", score: 1, feedback: "Passive engagement. You denied the clapback impulse but still took the bait by replying. Not replying at all is often the strongest response, and 'respectfully disagree' is a subtler form of biting the hook." },
+      { text: "Delete the comment without a reply and move on with your evening. Pretend you never saw it and keep scrolling to the next notification in the stack.", score: 2, feedback: "Pragmatic and safe, but you skipped the practice rep. The score-3 answer is the same outcome with intentionality, you chose tomorrow-you's call instead of reacting tonight. The delete isn't the issue, the reflex is." },
+      { text: "Close the app. Go train. In the morning, either hide the comment or reply with one line: 'Appreciate you reading it. If something specific is wrong, happy to hear it.'", score: 3, feedback: "The pause created distance between your ego and the keyboard. Tomorrow-you will make a different call than tonight-you, and tomorrow-you is usually right. The pause isn't just a second, it can be hours when the stakes are emotional." },
+    ],
+    idealResponse: "Do NOT reply tonight. Phone away, go train, sleep on it. In the morning, if it still feels worth responding to: 'Appreciate you taking the time to read it. If something specific is wrong, I'm open to hearing it, happy to update the post if you can point me at it.' One sentence, zero defense. If in the morning it doesn't feel important anymore, don't reply at all. That's also a win.",
+    scoringFramework: ['Control', 'Confidence', 'Connection'],
+  },
+  {
+    id: 'fisher-020',
+    skillCategory: 'Communication',
+    subSkill: 'The Pause',
+    source: FISHER_SOURCE,
+    principle: "When you're caught flat, buy yourself a breath before answering honestly",
+    situation: "Family dinner in Kotki. Your dad, half-joking but with an edge under it: \"So, we haven't seen you in over two months. Is Warsaw that much more interesting than your parents now?\"",
+    options: [
+      { text: "Dad come on, I've been working nonstop with four contracts running at once. You know how it is when you're trying to build something serious, it's not like I disappeared on purpose.", score: 0, feedback: "Defensive list of excuses, makes him feel like his feelings are a logistics problem. When someone says they miss you, 'I was busy' is the wrong first word out of your mouth, even when it's technically true." },
+      { text: "I called you last week though, we talked for like half an hour about the garden and your new tiling project. That counts as keeping in touch, doesn't it?", score: 1, feedback: "Technically true, emotionally misses the point entirely. He's not asking about phone calls, he's asking about showing up at the kitchen table on a Sunday. Don't argue the letter when they're speaking the spirit." },
+      { text: "I miss you guys too. Work has been intense this quarter and I know I've been harder to reach, I'll try to be better about showing up in person from here on out.", score: 2, feedback: "Warmer but still half-deflecting to context. The score-3 answer drops the 'work has been intense' line entirely and replaces it with a concrete date on the calendar, which is what he actually wants from you." },
+      { text: "*(pause, look at him)* That's fair. I've let it slip and it's been too long. Let's lock a weekend this month, how about the 18th? I'll come up Friday night and stay through Sunday.", score: 3, feedback: "The pause signals you actually heard him. A clean acknowledgment and a specific date turn the feeling into an appointment on the calendar. That combination reads as 'I meant it' in plain language." },
+    ],
+    idealResponse: "Put the fork down. Two seconds of silence, eye contact. 'That's fair, Dad. I let it slip and that's on me. Let's lock a weekend this month, how about the 18th? I'll come up Friday night and stay through Sunday.' No list of excuses and no 'work has been crazy'. The pause before speaking signals you actually heard him instead of reflexively defending the timeline.",
+    scoringFramework: ['Control', 'Confidence', 'Connection'],
+  },
+
+  // ─── Delivering hard news (expanded) ─────────────────────────────────────
+
+  {
+    id: 'fisher-021',
+    skillCategory: 'Communication',
+    subSkill: 'Delivering hard news',
+    source: FISHER_SOURCE,
+    principle: 'Label the bad news cleanly, then hand them something to grip',
+    situation: "You committed to Nelem that the ServiceNow-to-SAP integration would be ready for UAT this Friday. It's Tuesday and you now know it won't be done. Realistic date is Wednesday next week. You need to tell their CTO.",
+    options: [
+      { text: "Honestly sorry, you know how these integrations go, we ran into some unexpected issues with the IDoc mapping on the SAP side and things got more complicated than we originally scoped.", score: 0, feedback: "Excuses and no date on the table. 'It's complicated' is a refuge, not a communication. They need a number and a commitment, not a narrative about what went wrong on your side of the stack." },
+      { text: "Can we push UAT to next Friday? There's some stuff on the SAP mapping side we need to iron out before we hand it to your testers for proper runs on real data.", score: 1, feedback: "You're asking permission without labeling the bad news, giving vague reasons, and picking a date without owning why. They'll push back harder because they don't know what they're agreeing to or how much rope you actually need." },
+      { text: "Hey, so we're running a bit behind on the integration. I think we'll need a few extra days past Friday to get everything locked down properly for UAT hand-off.", score: 2, feedback: "You softened the size. 'A bit' and 'a few' both minimize what's actually a six-business-day slip. By the time they learn the real number, trust is damaged. The hard news is hardest when they feel misled about its size." },
+      { text: "I need to give you a hard update: the integration won't be ready for UAT on Friday. Realistic date is Wednesday next week at 4pm. Here's what's slipping and what I need from your side to hold it.", score: 3, feedback: "Labeled the news, gave the real number, owned the cause, handed them an action. Fisher's full framework in one paragraph. Clients respect hard news delivered cleanly far more than soft news delivered three times." },
+    ],
+    idealResponse: "Preferably call, not email. 'I need to give you a hard update: the integration won't be ready for UAT this Friday. The realistic date is Wednesday, 4pm. The slip is on me, I underestimated the SAP IDoc mapping complexity for three custom fields. What I need from your side to hold the new date: confirmed field mappings for those three fields by Thursday EOD. Can your team commit to that, and does Wednesday work on your end?' Label, own, specific date, specific ask.",
+    scoringFramework: ['Control', 'Confidence', 'Connection'],
+  },
+  {
+    id: 'fisher-022',
+    skillCategory: 'Communication',
+    subSkill: 'Delivering hard news',
+    source: FISHER_SOURCE,
+    principle: 'Say the hard thing with warmth, not apology',
+    situation: "After a brutal quarter (4 clients, late nights, weekend catch-ups), you decide you need 5 days alone in the mountains to reset, no laptop, no phone. You need to tell Alicja, who's been looking forward to the Zakopane trip you half-planned together.",
+    options: [
+      { text: "So, I kind of need to go away for a few days by myself, sorry, I know we were going to go to Zakopane together, it's just been a lot and I don't know, I think I need some space.", score: 0, feedback: "Apologetic, hedging, and 'I need some space' is the scariest sentence in a relationship. You made something simple sound ominous. Apologizing for a basic human need turns it into a confession of something worse than it is." },
+      { text: "Babe I'm so exhausted from this quarter. I think I need to go away alone for a bit to reset. Would that be okay with you if we push Zakopane back by a couple weeks?", score: 1, feedback: "You asked permission in a way that invites a negotiation about whether you should go at all. Needs aren't petitions. State them with warmth, don't request them as a favor she can veto." },
+      { text: "I'm going to take 5 days to myself next month. I'm wrecked from this quarter and I need the reset badly. Let's reschedule Zakopane for two weeks after I'm back.", score: 2, feedback: "Direct and clean, but missing the warmth layer. 'I love that we planned this together' is what makes the news land soft. Without it, it sounds like you're announcing a decision she had no say in." },
+      { text: "I want to talk to you about something. This quarter drained me more than I let on, and I need five days alone in the mountains. I love that we planned Zakopane, I'm asking if we can push it two weeks.", score: 3, feedback: "Labeled, owned the why, honored the existing plan, proposed a concrete alternative. Hard news lands clean when it comes with warmth AND a path forward in the same breath." },
+    ],
+    idealResponse: "Sit down with her, no distractions. 'Hey. I want to talk to you about something. This quarter drained me more than I let on, I'm running on empty and I need five days alone in the mountains to reset. No laptop, no phone. I love that we'd planned Zakopane together and I still want that trip with you, I'm asking if we can push it two weeks. I'm not stepping away from us, I want to come back recharged for both of us. Can we pick new dates together?' Labeled with ownership and warmth, and you offered an alternative that honors what she was excited about.",
+    scoringFramework: ['Control', 'Confidence', 'Connection'],
+  },
+  {
+    id: 'fisher-023',
+    skillCategory: 'Communication',
+    subSkill: 'Delivering hard news',
+    source: FISHER_SOURCE,
+    principle: 'Respect their time more than their feelings, gently',
+    situation: "A Udemy student emails: \"Hi Lukasz! I'm taking CIS-HAM next Monday. I've skipped the CSA and CAD prereqs because I'm busy, and I just watched your practice tests. I feel ready, any final tips?\" You know taking CIS-HAM without the foundations is a near-guaranteed fail.",
+    options: [
+      { text: "You should not be taking this exam. You will fail without the CSA and CAD foundations. Reschedule the date and come back once you've actually got the prerequisites done first.", score: 0, feedback: "Right instinct, wrong delivery. It reads as condescending and they'll reject the advice out of ego even if it's true. Correct AND cold equals ignored, every time, regardless of how much data you have on your side." },
+      { text: "I'd recommend having the prerequisites done first before HAM, but you know your situation better than I do. Good luck on Monday and let me know how it goes afterwards.", score: 1, feedback: "Soft-pedaling. 'You know your situation best' is a cop-out when you actually have data showing the likely outcome. Being liked is not the same as being helpful, and silence on the real risk is its own kind of lie." },
+      { text: "Best of luck on Monday! Make sure to review the Asset Management lifecycle one more time and read up on the Discovery patterns chapter, those tend to come up on the HAM exam.", score: 2, feedback: "Friendly, but you hid the real issue entirely. They'll fail, feel blindsided, and blame your course in a 1-star review. The conversation you avoid today is the harder one you get next week with a lot more heat attached." },
+      { text: "This isn't the advice you want five days out, but I have to be honest: without CSA and CAD, HAM has about a 20% pass rate in my student data. My real recommendation is to push the exam by four weeks.", score: 3, feedback: "Label plus hard truth plus specific number plus two paths. Respecting someone's time means telling them when they're walking into a wall, gently but unmistakably." },
+    ],
+    idealResponse: "'This isn't the advice you were hoping for five days out, but I'd be a bad instructor if I sugarcoated it: taking CIS-HAM without the CSA/CAD foundations has roughly a 20% pass rate in my student data. My honest recommendation is to push the exam by four weeks and run through the CSA practice tests first, you'll pass HAM comfortably after. If you can't move the date, focus your remaining days on the three HAM domains where prereq gaps hurt most. Either way, I'm rooting for you, let me know what you decide.' Label, real number, ideal path, fallback path, warmth to close.",
+    scoringFramework: ['Control', 'Confidence', 'Connection'],
+  },
+
+  // ─── Assertiveness (expanded) ────────────────────────────────────────────
+
+  {
+    id: 'fisher-024',
+    skillCategory: 'Assertiveness',
+    subSkill: 'Assertiveness',
+    source: FISHER_SOURCE,
+    principle: 'Confidence is calm and specific, no apology',
+    situation: "PwC offers you a 4% raise in your contract renewal. You've benchmarked the market and know senior ServiceNow architects are commanding 15-20% more. You're on a video call with the partner.",
+    options: [
+      { text: "That's kind of insulting honestly. I bring way more value to this account than 4% reflects and we both know what the market rate is right now, this isn't a serious counteroffer.", score: 0, feedback: "Aggression dressed up as assertiveness. You'll either damage the relationship or get a bigger number while losing the partner's respect on the way. Confidence doesn't insult the counterparty, it just names the gap and waits." },
+      { text: "Um, honestly I was hoping for a bit more than that? I think the market has moved up quite a lot in the last year and I was expecting closer to 15 or 20.", score: 1, feedback: "'Um' plus 'I think' plus 'a bit more' plus question-tone at the end equals four credibility drops inside one sentence. Assertiveness starts with the absence of filler and ends with a specific number you're willing to name out loud." },
+      { text: "I was expecting closer to 15%. The market for senior ServiceNow architects has moved up in the past year and I'd like to revisit that number together. Can we look at it again?", score: 2, feedback: "Specific number, which is better than most people manage. But 'can we revisit' frames it as a request rather than a position you've taken. The score-3 answer owns the gap without asking permission to name it out loud." },
+      { text: "I appreciate the offer, and I want to be straight: I've benchmarked the market, the range is 15-20% above current. I'd like 18%. I'm open on scope or commitment length, but 4% isn't going to work.", score: 3, feedback: "Clear, specific, confident, flexible on the how but not on the what. Fisher's signature assertiveness: calm voice and a specific number, paired with flexibility on the how but not on the what." },
+    ],
+    idealResponse: "Calm voice, no filler in it: 'I appreciate you coming back with that. I need to be direct: I've benchmarked the market for senior ServiceNow architects in Poland and the range is 15-20% above my current rate. I'd like to land at 18%. I'm open on scope or length or whatever else helps us get there together, but 4% isn't workable. Can we find a way there?' No 'sorry' and no 'um'. You've named the number with reasoning behind it, and you've stayed flexible on the how without budging on the what.",
+    scoringFramework: ['Control', 'Confidence', 'Connection'],
+  },
+  {
+    id: 'fisher-025',
+    skillCategory: 'Assertiveness',
+    subSkill: 'Assertiveness',
+    source: FISHER_SOURCE,
+    principle: 'Reclaim your work cleanly in the moment, no villain needed',
+    situation: "In a Generali steerco, the Reply contractor (Marco) presents \"his\" architecture, except you designed it over two weeks, reviewed it with him, and he presented it nearly verbatim without attribution. The PM says: \"Great work Marco, this is exactly what we needed.\"",
+    options: [
+      { text: "Actually that's my architecture. Marco copied the diagram from our shared drive last week without asking. I have the original Miro board with the timestamps if anyone wants to verify.", score: 0, feedback: "Factually accurate, but the tone makes YOU the problem in the room. The PM will remember you as petty even when you're right. Correct AND petty loses more capital than staying quiet for a fight that matters more." },
+      { text: "Thanks, we worked on this one as a team over the past couple of weeks. Marco did great on the presentation side and we had some good back-and-forth on the design choices together.", score: 1, feedback: "Way too soft. You let Marco keep the lion's share of the credit in front of the PM. Being generous is not the same as being invisible, and in this room the distinction matters for your next renewal conversation." },
+      { text: "Just to add context, the model came from sessions Marco and I ran together over two weeks. I led the data architecture piece and Marco handled the process flow side of it.", score: 2, feedback: "Solid, names your contribution clearly without attacking Marco. The score-3 version adds the decision log offer, which is what converts 'claim' into 'evidence you can check'. That one extra beat makes it unarguable." },
+      { text: "Glad this is landing well. Worth flagging, Marco and I designed this together over the past two weeks and I led the data architecture piece. Happy to share the decision log if anyone wants the reasoning.", score: 3, feedback: "You reclaimed credit without attacking Marco, invited verification without demanding it, and offered value instead of a grievance. Assertiveness without aggression: calm and specific, no villain needed in the story." },
+    ],
+    idealResponse: "Wait for a natural pause, don't interrupt. Calm, same tone as everyone else: 'Glad this is landing well. One quick note for the room, Marco and I designed this together over the past two weeks and I led the data architecture piece. Happy to share the decision log if anyone wants the reasoning behind the choices.' Then stop talking. Marco now has to either agree or look dishonest in front of the PM. You reclaimed your work without a single aggressive word.",
+    scoringFramework: ['Control', 'Confidence', 'Connection'],
+  },
+  {
+    id: 'fisher-026',
+    skillCategory: 'Assertiveness',
+    subSkill: 'Assertiveness',
+    source: FISHER_SOURCE,
+    principle: 'A warm no is faster than a reluctant yes',
+    situation: "At a LinkedIn Local event in Warsaw, a speaker corners you in front of two other people: \"Lukasz, I saw your courses. I'm writing a ServiceNow book and I'd love you as co-author, you bring the practitioner angle, I bring the publisher deal. 50/50 split. What do you say?\"",
+    options: [
+      { text: "No thanks, co-authoring books is usually a scam for the less-famous author anyway. The publisher-connected person gets the byline weight and the other one does most of the actual writing work for scraps.", score: 0, feedback: "Insulting AND assumes bad faith about the person in front of witnesses. You just ended a relationship over a pitch you could have declined in ten seconds. Assertiveness isn't a license for contempt, even when the idea is bad." },
+      { text: "Oh wow, flattering that you'd think of me, thanks. I don't know, let me sleep on it and get back to you, can I grab your email or LinkedIn before you head out?", score: 1, feedback: "Yes-adjacent, invites follow-up DMs for weeks. If you already know the answer is no, 'let me think' is politeness theater that wastes both of your time. You'll dread his next message and he'll assume you're interested." },
+      { text: "Interesting idea, send me the proposal and I'll take a look when I have a chance. Can't promise anything right now but I'll think about it properly when I see the outline and structure.", score: 2, feedback: "You gave false hope and committed yourself to a future conversation you don't want to have. 'I'll take a look' without genuine interest is just a slow no with extra steps. The kind answer is the faster one you avoided giving." },
+      { text: "Thanks for thinking of me, honestly this isn't the right fit for me right now. I'm keeping my focus on Udemy. If you want a practitioner voice, [name] does great work in this space.", score: 3, feedback: "Clear no, honest reason, concrete pointer to an alternative, warm delivery. A fast warm no is a kindness to them and to yourself, and it takes fifteen seconds instead of three weeks of dodged DMs." },
+    ],
+    idealResponse: "Warm smile and steady voice, no hesitation: 'Thanks for thinking of me, honestly this isn't the right fit for me right now. I'm keeping my focus on Udemy and don't have headroom for a book project. If you want a real practitioner voice, [someone specific] would be a great match and I can introduce you.' Clear no with an honest reason, warm alternative attached. 15 seconds total. Everyone walks away without awkwardness and you never have to think about it again.",
+    scoringFramework: ['Control', 'Confidence', 'Connection'],
+  },
+
+  // ─── No absolutes (expanded) ─────────────────────────────────────────────
+
+  {
+    id: 'fisher-027',
+    skillCategory: 'Communication',
+    subSkill: 'No absolutes',
+    source: FISHER_SOURCE,
+    principle: 'Specific complaints land, absolutes invite defense',
+    situation: "Alicja, mid-argument: \"You NEVER plan anything for us. I'm always the one who has to book the restaurant, pick the weekend, organize the trip. I'm tired of it.\"",
+    options: [
+      { text: "That's not true, I planned Barcelona. I planned the hiking weekend in August. I planned the dinner for your birthday last month. I plan plenty, you just don't remember the times I did it.", score: 0, feedback: "You defended against the 'never' and produced a receipt list. You won a technical point and lost the actual conversation. Arguing the absolute is walking straight into the trap she laid by accident." },
+      { text: "Okay, tell me what you want me to plan and I'll plan it. Do you want me to handle the next weekend, the one after, or both? Just give me the assignment and I'll book it.", score: 1, feedback: "Reactive compliance. You'll 'fix' the wrong thing by booking one restaurant to prove a point, instead of addressing the actual pattern she's complaining about. Understanding comes before fixing, every single time." },
+      { text: "I hear you. I can do more on the planning side, what about I take the next three weekends? I'll book dinners, find activities, handle the whole thing start to finish.", score: 2, feedback: "Decent, you acknowledged and offered action. But you skipped the 'help me understand what's heaviest' step, which means you might be solving the wrong problem with good intentions. Action without diagnosis is just noise." },
+      { text: "You're right it's landed on you more often than is fair. Before I promise to fix it, can you tell me which parts feel heaviest? Booking a dinner and researching a trip aren't the same load.", score: 3, feedback: "Dropped the 'never' without weaponizing it, validated the real complaint underneath, and asked for specificity before committing to anything. Find the real complaint under the absolute and respond to THAT." },
+    ],
+    idealResponse: "'You're right that it's landed on you more often than is fair, and I don't want to turn this into a scoreboard. Before I commit to fixing it, can you tell me which parts feel heaviest? Booking a dinner and researching a trip for three hours aren't the same load, and I want to take the right thing off your plate, not just prove I can plan a dinner.' Validates the real complaint under the absolute and asks for specificity before committing, so you change the actual weight distribution instead of performing change.",
+    scoringFramework: ['Control', 'Confidence', 'Connection'],
+  },
+  {
+    id: 'fisher-028',
+    skillCategory: 'Communication',
+    subSkill: 'No absolutes',
+    source: FISHER_SOURCE,
+    principle: "'Totally changed' is never the real complaint, find what's underneath",
+    situation: "Over beers, Szymon says: \"Dude, you've totally changed since the Udemy thing blew up. You used to actually hang out. Now it's all work, courses, training, I don't even recognize you anymore.\"",
+    options: [
+      { text: "I haven't changed, you're just not used to me having actual priorities now. I still make time for the people who show up for me when it counts, man.", score: 0, feedback: "You counter-attacked and implied he's not one of the people who show up. You just ended the conversation AND the friendship in one sentence. Defending against an absolute with another absolute doubles the damage every time." },
+      { text: "I've been busy, man. Life gets complicated when you're trying to build something serious. You know how it is, you've been through busy seasons yourself when work picks up.", score: 1, feedback: "Generic, distant, doesn't engage with what he's actually feeling. 'Life gets complicated' is a conversational shutdown dressed up as an explanation, and your best friend from fifteen years deserves better than a press release." },
+      { text: "Fair, I've been in my own head a lot this quarter. Let's plan something real soon, maybe next weekend? I'll make it work on my end whenever you're free this week.", score: 2, feedback: "Okay, you committed to action, but you skipped the understanding step entirely. 'Something real soon' is vague enough to never happen. The score-3 answer finds the specific thing he's missing, which is what actually repairs the gap." },
+      { text: "Hold up, before I defend myself or promise to fix it, what are you actually missing? 'Changed' is the headline, I want the specific thing. Is it the hanging out? Me asking about your stuff?", score: 3, feedback: "You refused to argue 'totally changed' AND pulled him toward the real complaint underneath, which is where the fix lives. Absolutes are translations of something more specific. Find the original and respond to THAT." },
+    ],
+    idealResponse: "Put the beer down. 'Hold up, before I defend myself or commit to fixing it, what are you actually missing? Because 'totally changed' is the headline and I want to know the specific thing. Is it the hanging out? A specific thing we used to do? Feeling like I don't ask about your stuff anymore? Tell me the real thing and I can actually do something about it.' You refused the absolute gracefully AND pulled him toward the real complaint. That's where you can actually rebuild.",
+    scoringFramework: ['Control', 'Confidence', 'Connection'],
+  },
+
+  // ─── Validation first (expanded) ─────────────────────────────────────────
+
+  {
+    id: 'fisher-029',
+    skillCategory: 'Emotional Intelligence',
+    subSkill: 'Validation first',
+    source: FISHER_SOURCE,
+    principle: 'Protect their ego so they can hear the correction',
+    situation: "A junior ServiceNow dev on your Generali project pitches their design in standup: \"I'm creating a new custom table to track asset lifecycle events, u_asset_events, with fields for event type, source user, and timestamp. I'll write a business rule to populate it from updates on cmdb_ci.\"",
+    options: [
+      { text: "You don't need a custom table for that, use the Asset Management audit log. It's literally built for this use case. Please check OOTB next time before designing something from scratch.", score: 0, feedback: "Technically right, socially disastrous. 'Please check OOTB' reads as 'do your homework', and the junior will stop asking you questions for weeks after this exchange. Being technically right without validation first is a slow way to lose a mentee for good." },
+      { text: "Hmm, I'm not sure about that approach honestly. Let me think about it and get back to you later today, I want to give it a proper look before I give you firm direction on which path to take.", score: 1, feedback: "Avoidance. You deferred a teaching moment to protect your own comfort in the standup. The conversation you avoid today is the bad design that ships next week and costs three days of your time to rip out later." },
+      { text: "That approach works, but you should check OOTB first before you build it. Look at cmdb_ci_audit and the Asset Audit plugin, one of them probably already covers what you're trying to do.", score: 2, feedback: "Correct direction, but drier than it needs to be for a junior in their first design review. The validation-first version lands softer AND sticks better because it makes the junior feel like a collaborator instead of someone being corrected in front of the standup." },
+      { text: "Good instinct to capture that data, that IS the right problem. Thing I'd check first is whether cmdb_ci_audit or the Asset Audit plugin already covers your use case. Want me to show you?", score: 3, feedback: "Validated the instinct, gently redirected to OOTB, offered partnership. 'Help me understand' energy applied to giving feedback: make them a collaborator, not a student being corrected in front of the team." },
+    ],
+    idealResponse: "'Good instinct, capturing lifecycle events is exactly the right problem to solve and I love that you came to standup with a concrete design. Before you build the custom table, let me show you two things: the cmdb_ci audit history table, and the Asset Audit plugin. One of them probably covers 80% of what you need out of the box. If neither fits, we'll design the custom table together and I'll help you avoid the trap I fell into when I built one last year.' Validate the instinct and redirect gently, then share a story that normalizes the mistake so the correction doesn't feel like a reprimand.",
+    scoringFramework: ['Control', 'Confidence', 'Connection'],
+  },
+  {
+    id: 'fisher-030',
+    skillCategory: 'Emotional Intelligence',
+    subSkill: 'Validation first',
+    source: FISHER_SOURCE,
+    principle: 'Hear the dream before you audit the plan',
+    situation: "Alicja, excited: \"Okay so I have this idea, I want to start a pet-sitting service for people in our district. I'd build a WhatsApp group, post on the local Facebook, and charge 50 PLN per visit. I could make like 3000 PLN a month easy.\"",
+    options: [
+      { text: "Hmm, that's a saturated market and 50 PLN per visit after transport costs is barely anything once you factor petrol and time. Have you done the actual math on how many visits you'd need?", score: 0, feedback: "You went straight to auditor mode and killed the spark inside ten seconds. When someone shares an idea excitedly, the first move is curiosity, not critique. You just taught her not to share ideas with you for a while." },
+      { text: "Sounds cool, go for it! I think it's a fun idea and you should just start posting to see what happens. Worst case you try it and it doesn't work out, nothing lost.", score: 1, feedback: "Empty validation. She'll know you didn't actually engage, and you'll miss the chance to help her build something real out of the spark. Cheerleading is not the same as listening, and she wanted the second thing from you." },
+      { text: "That's a great idea in theory, I'd want to think through the margins before you commit to it, but I love the initiative. Let me know if you want to run the numbers together later this week.", score: 2, feedback: "Okay, you validated the initiative AND flagged a concern without killing it outright. But you still led with a partial concern. The score-3 version asks her 'what are you really after' before introducing any concern at all." },
+      { text: "I love that you're thinking about this. Tell me more, what made you want to do it? Is it the money, the flexibility, the dogs, or something else? The plan looks different depending on the answer.", score: 3, feedback: "The curiosity IS the validation. You're taking the idea seriously enough to probe what she actually wants out of it. The audit comes later, after you know what she's chasing. Validate by engaging deeply, not by cheerleading from the sidelines." },
+    ],
+    idealResponse: "Genuine interest in your face, not performative: 'I love that you're thinking about this. Tell me more, what made you want to do it? Is it the money, the flexibility, the dogs, or something else entirely? The plan looks different depending on which one. I want to help you pressure-test it, but I want to understand what you're actually chasing first.' The question is the validation. Taking her idea seriously enough to probe it is worth more than any 'sounds great'. The audit comes after, if she invites it.",
+    scoringFramework: ['Control', 'Confidence', 'Connection'],
+  },
+  {
+    id: 'fisher-031',
+    skillCategory: 'Emotional Intelligence',
+    subSkill: 'Validation first',
+    source: FISHER_SOURCE,
+    principle: 'Even when you are technically right, they need to feel heard first',
+    situation: "A Udemy student emails you a three-paragraph complaint about question #47 in your CIS-CSM practice test. They claim the answer is wrong, cite a blog post as their source, and demand you fix it. You check, your answer IS correct per the current ServiceNow docs, the blog post they cited is from 2019 and outdated.",
+    options: [
+      { text: "I've verified the answer with the official documentation. It's correct. Please review the current ServiceNow docs before challenging questions next time, it'll save both of us some back-and-forth down the line.", score: 0, feedback: "Technically right, relationally destructive. 'Please review next time' is a reprimand and the student will leave a 1-star review within the hour of reading this. Correct and cold is still a loss on the income statement." },
+      { text: "Thanks for writing in. I checked and our answer is actually correct, the blog post you cited is from 2019 and the platform has changed since then. Current ServiceNow docs link below confirms it.", score: 1, feedback: "Correct info, but you skipped the validation layer entirely. 'Actually correct' reads as 'you're wrong and I'm right' and the student will feel dismissed despite you being factually correct. Winning the technical point without validation still loses the student." },
+      { text: "Thanks! I double-checked and our answer matches the current docs on my end. The blog post you're referencing is outdated, it covers pre-Vancouver behavior which changed when that release dropped.", score: 2, feedback: "Flat, matter-of-fact, skips the validation layer. The student gets the right info but feels dismissed in the process. The score-3 version gives the same info inside a warm frame that preserves the relationship AND earns you an ally." },
+      { text: "Thanks for digging into this, that level of engagement is why the course gets better. I checked: the answer matches current docs, and I can see why the 2019 blog made it confusing, the behavior changed in Vancouver. I'll add a footnote.", score: 3, feedback: "Validated the effort AND the legitimacy of their confusion, explained WHY their source made sense at one point, gave them a win with the footnote, kept the correct answer. Even when you're right, they need to feel their effort wasn't stupid." },
+    ],
+    idealResponse: "'Thanks for taking the time to write this up, that level of engagement is exactly why I keep updating the course, and I wish more students cared enough to dig in like this. I checked: the current answer does match the official ServiceNow docs [link]. And this matters, you weren't wrong to be confused. The blog post you cited is accurate for pre-Vancouver behavior, ServiceNow changed that in the Vancouver release. So you were reading a real source, it just wasn't current anymore. I'll add a footnote to the question explaining the history so the next student doesn't hit the same trap. Great catch even though the answer stands, and thanks for caring enough to push on it.' Validate the effort, validate WHY their confusion made sense, give them a concrete win with the footnote, keep the correct answer. Now they're an ally instead of a complainer.",
+    scoringFramework: ['Control', 'Confidence', 'Connection'],
+  },
+];
