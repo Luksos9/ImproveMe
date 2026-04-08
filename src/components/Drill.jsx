@@ -1,12 +1,16 @@
 import { useState } from 'react';
 import { colors, fonts, fontSizes, spacing, radii } from '../styles/theme';
 import { SKILL_CATEGORIES } from '../data/fisher-scenarios';
-import { ALL_SEED_SCENARIOS, supportsTier } from '../data/all-scenarios';
+import {
+  ALL_SEED_SCENARIOS,
+  getSourceOptions,
+  matchesSource,
+  supportsTier,
+} from '../data/all-scenarios';
 import { getCapturedScenarios } from '../utils/storage';
 import { isApiConfigured } from '../utils/claudeApi';
 import { previewCaptureCount } from '../utils/dailyDrill';
 
-// Tier definitions surfaced in the picker.
 const TIERS = [
   {
     id: 'tier1',
@@ -25,34 +29,27 @@ const TIERS = [
   },
 ];
 
-// Drill tab — capture-first hierarchy.
-// Daily drill primary CTA, capture secondary CTA, then the difficulty
-// picker, all-scenarios link, and skill grid below a "more" divider.
-//
-// Props:
-//   onStart(skillCategory | null, tier) — null means "All scenarios"
-//   onDailyDrill()                      — start the auto-mixed daily drill (always Tier 2)
-//   onCapture()                         — open the capture form
-//   capturedCount                       — total captures saved (for the "All" count)
-export default function Drill({ onStart, onDailyDrill, onCapture, capturedCount = 0 }) {
+export default function Drill({ onStart, onDailyDrill, onCapture }) {
   const [tier, setTier] = useState('tier1');
+  const [sourceAuthor, setSourceAuthor] = useState(null);
+
   const apiOk = isApiConfigured();
   const tierBlurb = TIERS.find((t) => t.id === tier)?.blurb || '';
   const tierNeedsApi = (tier === 'tier2' || tier === 'tier3') && !apiOk;
   const drillNeedsApi = !apiOk;
   const showApiWarning = !apiOk;
   const drillCaptureCount = previewCaptureCount();
-  const allCount = ALL_SEED_SCENARIOS.length + capturedCount;
 
-  // Merge seeds + captures once so the skill grid can count both.
   const captured = getCapturedScenarios();
   const allScenarios = [...ALL_SEED_SCENARIOS, ...captured];
-  const tierEligible = allScenarios.filter((scenario) => supportsTier(scenario, tier));
+  const sourceOptions = getSourceOptions(ALL_SEED_SCENARIOS);
+  const sourceScoped = allScenarios.filter((scenario) => matchesSource(scenario, sourceAuthor));
+  const tierEligible = sourceScoped.filter((scenario) => supportsTier(scenario, tier));
+  const allCount = sourceScoped.length;
   const allDisabled = tierEligible.length === 0 || tierNeedsApi;
 
   return (
     <div style={{ padding: `${spacing.xl}px 20px ${spacing.lg}px 20px` }}>
-      {/* Header */}
       <div style={{ marginBottom: spacing.xl }}>
         <p
           style={{
@@ -93,7 +90,6 @@ export default function Drill({ onStart, onDailyDrill, onCapture, capturedCount 
         </p>
       </div>
 
-      {/* PRIMARY: Daily drill */}
       <button
         onClick={onDailyDrill}
         disabled={drillNeedsApi}
@@ -143,7 +139,6 @@ export default function Drill({ onStart, onDailyDrill, onCapture, capturedCount 
         </span>
       </button>
 
-      {/* SECONDARY: Capture */}
       <button
         onClick={onCapture}
         style={{
@@ -189,7 +184,6 @@ export default function Drill({ onStart, onDailyDrill, onCapture, capturedCount 
         </div>
       )}
 
-      {/* "more" divider */}
       <div
         style={{
           display: 'flex',
@@ -213,7 +207,6 @@ export default function Drill({ onStart, onDailyDrill, onCapture, capturedCount 
         <div style={{ flex: 1, height: 1, background: colors.borderSubtle }} />
       </div>
 
-      {/* Tier picker (de-emphasized) */}
       <div style={{ marginBottom: spacing.lg }}>
         <p
           style={{
@@ -280,9 +273,46 @@ export default function Drill({ onStart, onDailyDrill, onCapture, capturedCount 
         )}
       </div>
 
-      {/* All scenarios — text-link styling */}
+      <div style={{ marginBottom: spacing.lg }}>
+        <p
+          style={{
+            fontFamily: fonts.sans,
+            fontSize: fontSizes.eyebrow,
+            letterSpacing: '0.15em',
+            textTransform: 'uppercase',
+            color: colors.textVeryDim,
+            marginBottom: spacing.sm,
+          }}
+        >
+          Source
+        </p>
+        <div
+          style={{
+            display: 'flex',
+            gap: spacing.sm,
+            flexWrap: 'wrap',
+          }}
+        >
+          <button
+            onClick={() => setSourceAuthor(null)}
+            style={sourceChipStyle(sourceAuthor === null)}
+          >
+            All sources
+          </button>
+          {sourceOptions.map((source) => (
+            <button
+              key={source.key}
+              onClick={() => setSourceAuthor(source.key)}
+              style={sourceChipStyle(sourceAuthor === source.key)}
+            >
+              {source.label} ({source.count})
+            </button>
+          ))}
+        </div>
+      </div>
+
       <button
-        onClick={() => onStart(null, tier)}
+        onClick={() => onStart(null, tier, sourceAuthor)}
         disabled={allDisabled}
         style={{
           width: '100%',
@@ -325,7 +355,6 @@ export default function Drill({ onStart, onDailyDrill, onCapture, capturedCount 
         Or pick a skill
       </p>
 
-      {/* Skill grid — 2 columns. Empty skills render dimmed and sort last. */}
       <div
         style={{
           display: 'grid',
@@ -336,7 +365,7 @@ export default function Drill({ onStart, onDailyDrill, onCapture, capturedCount 
         {[...SKILL_CATEGORIES]
           .map((skill) => ({
             skill,
-            count: allScenarios.filter((s) => s.skillCategory === skill).length,
+            count: sourceScoped.filter((s) => s.skillCategory === skill).length,
             tierCount: tierEligible.filter((s) => s.skillCategory === skill).length,
           }))
           .sort((a, b) => {
@@ -350,7 +379,7 @@ export default function Drill({ onStart, onDailyDrill, onCapture, capturedCount 
             return (
               <button
                 key={skill}
-                onClick={() => (empty ? null : onStart(skill, tier))}
+                onClick={() => (empty ? null : onStart(skill, tier, sourceAuthor))}
                 disabled={disabled}
                 style={{
                   padding: '12px 14px',
@@ -426,4 +455,19 @@ export default function Drill({ onStart, onDailyDrill, onCapture, capturedCount 
       </div>
     </div>
   );
+}
+
+function sourceChipStyle(selected) {
+  return {
+    padding: '8px 12px',
+    background: selected ? colors.accent : colors.surface,
+    color: selected ? colors.bg : colors.textCool,
+    border: `1px solid ${selected ? colors.accent : colors.border}`,
+    borderRadius: radii.pill,
+    fontFamily: fonts.sans,
+    fontSize: fontSizes.meta,
+    fontWeight: 500,
+    cursor: 'pointer',
+    transition: 'all 0.15s',
+  };
 }

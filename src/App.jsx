@@ -3,7 +3,7 @@ import AppShell from './components/AppShell';
 import ScenarioExercise from './components/ScenarioExercise';
 import Results from './components/Results';
 import Capture from './components/Capture';
-import { ALL_SEED_SCENARIOS, supportsTier } from './data/all-scenarios';
+import { ALL_SEED_SCENARIOS, matchesSource, supportsTier } from './data/all-scenarios';
 import { shuffle } from './utils/shuffle';
 import { getCapturedScenarios, markPracticed } from './utils/storage';
 import { buildDailyDrill } from './utils/dailyDrill';
@@ -19,15 +19,19 @@ export default function App() {
   const [activeScenarios, setActiveScenarios] = useState([]);
   const [sessionResults, setSessionResults] = useState([]);
   const [activeTier, setActiveTier] = useState('tier1');
+  const [activeSkillCategory, setActiveSkillCategory] = useState(null);
+  const [activeSourceAuthor, setActiveSourceAuthor] = useState(null);
   // Cache the captured list so the menu can show counts without re-reading
   // localStorage on every render. Re-read on save/drill completion.
   const [captured, setCaptured] = useState(() => getCapturedScenarios());
 
   // Start a session for a specific skill category (or null for "All") at a given tier.
   // Pool includes all seed scenarios + captures. Filtering is by top-level skillCategory.
-  const startPractice = (skillCategory, tier = 'tier1') => {
+  const startPractice = (skillCategory, tier = 'tier1', sourceAuthor = null) => {
     const merged = [...ALL_SEED_SCENARIOS, ...captured];
-    const tierEligible = merged.filter((scenario) => supportsTier(scenario, tier));
+    const tierEligible = merged
+      .filter((scenario) => supportsTier(scenario, tier))
+      .filter((scenario) => matchesSource(scenario, sourceAuthor));
     const filtered =
       skillCategory === null
         ? tierEligible
@@ -36,6 +40,8 @@ export default function App() {
     setActiveScenarios(shuffle(filtered));
     setSessionResults([]);
     setActiveTier(tier);
+    setActiveSkillCategory(skillCategory);
+    setActiveSourceAuthor(sourceAuthor);
     setMode('practice');
   };
 
@@ -91,7 +97,6 @@ export default function App() {
           onStart={startPractice}
           onDailyDrill={startDailyDrill}
           onCapture={startCapture}
-          capturedCount={captured.length}
         />
       )}
 
@@ -110,7 +115,7 @@ export default function App() {
         <Results
           results={sessionResults}
           tier={activeTier}
-          onRestart={() => startPractice(null, activeTier)}
+          onRestart={() => startPractice(activeSkillCategory, activeTier, activeSourceAuthor)}
           onBackToMenu={resetToMenu}
         />
       )}

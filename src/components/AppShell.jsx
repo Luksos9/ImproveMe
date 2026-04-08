@@ -19,7 +19,7 @@ const TABS = [
   { id: 'dashboard', label: 'Dashboard', Icon: IconDashboard },
 ];
 
-export default function AppShell({ onStart, onDailyDrill, onCapture, capturedCount }) {
+export default function AppShell({ onStart, onDailyDrill, onCapture }) {
   const [tab, setTab] = useState('home');
 
   return (
@@ -36,7 +36,6 @@ export default function AppShell({ onStart, onDailyDrill, onCapture, capturedCou
             onStart={onStart}
             onDailyDrill={onDailyDrill}
             onCapture={onCapture}
-            capturedCount={capturedCount}
           />
         )}
         {tab === 'responses' && <Responses />}
