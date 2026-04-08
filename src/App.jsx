@@ -3,7 +3,7 @@ import AppShell from './components/AppShell';
 import ScenarioExercise from './components/ScenarioExercise';
 import Results from './components/Results';
 import Capture from './components/Capture';
-import { FISHER_SCENARIOS } from './data/fisher-scenarios';
+import { ALL_SEED_SCENARIOS, supportsTier } from './data/all-scenarios';
 import { shuffle } from './utils/shuffle';
 import { getCapturedScenarios, markPracticed } from './utils/storage';
 import { buildDailyDrill } from './utils/dailyDrill';
@@ -26,11 +26,13 @@ export default function App() {
   // Start a session for a specific skill category (or null for "All") at a given tier.
   // Pool includes all seed scenarios + captures. Filtering is by top-level skillCategory.
   const startPractice = (skillCategory, tier = 'tier1') => {
-    const merged = [...FISHER_SCENARIOS, ...captured];
+    const merged = [...ALL_SEED_SCENARIOS, ...captured];
+    const tierEligible = merged.filter((scenario) => supportsTier(scenario, tier));
     const filtered =
       skillCategory === null
-        ? merged
-        : merged.filter((s) => s.skillCategory === skillCategory);
+        ? tierEligible
+        : tierEligible.filter((s) => s.skillCategory === skillCategory);
+    if (filtered.length === 0) return;
     setActiveScenarios(shuffle(filtered));
     setSessionResults([]);
     setActiveTier(tier);

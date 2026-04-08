@@ -1,5 +1,6 @@
 import { colors, fonts, fontSizes, spacing, radii } from '../styles/theme';
-import { FISHER_SCENARIOS, SKILL_CATEGORIES } from '../data/fisher-scenarios';
+import { SKILL_CATEGORIES } from '../data/fisher-scenarios';
+import { ALL_SEED_SCENARIOS, supportsTier } from '../data/all-scenarios';
 import { getCapturedScenarios } from '../utils/storage';
 import { isApiConfigured } from '../utils/claudeApi';
 
@@ -18,7 +19,7 @@ const TIERS = [
 export default function Home({ onStart }) {
   const captured = getCapturedScenarios();
   const apiOk = isApiConfigured();
-  const allScenarios = [...FISHER_SCENARIOS, ...captured];
+  const allScenarios = [...ALL_SEED_SCENARIOS, ...captured];
 
   // Build one entry per skill category with count + practiced count.
   // Practiced count only applies to captures (seed scenarios don't track it).
@@ -34,6 +35,7 @@ export default function Home({ onStart }) {
       skill,
       count: scenarios.length,
       progressPct,
+      hasOpenText: scenarios.some((scenario) => supportsTier(scenario, 'tier2')),
     };
   });
 
@@ -91,6 +93,7 @@ export default function Home({ onStart }) {
           scenarioCount={card.count}
           progressPct={card.progressPct}
           apiOk={apiOk}
+          hasOpenText={card.hasOpenText}
           onStartTier={(tier) => onStart(card.skill, tier)}
         />
       ))}
@@ -98,7 +101,7 @@ export default function Home({ onStart }) {
   );
 }
 
-function SkillCard({ title, scenarioCount, progressPct, apiOk, onStartTier }) {
+function SkillCard({ title, scenarioCount, progressPct, apiOk, hasOpenText, onStartTier }) {
   const empty = scenarioCount === 0;
   return (
     <div
@@ -182,7 +185,7 @@ function SkillCard({ title, scenarioCount, progressPct, apiOk, onStartTier }) {
           {/* Three tier buttons */}
           <div style={{ display: 'flex', gap: spacing.sm }}>
             {TIERS.map((t) => {
-              const disabled = t.needsApi && !apiOk;
+              const disabled = (t.needsApi && !apiOk) || (t.needsApi && !hasOpenText);
               return (
                 <button
                   key={t.id}
@@ -219,6 +222,19 @@ function SkillCard({ title, scenarioCount, progressPct, apiOk, onStartTier }) {
               );
             })}
           </div>
+          {!hasOpenText && (
+            <p
+              style={{
+                fontFamily: fonts.sans,
+                fontSize: fontSizes.label,
+                color: colors.textDim,
+                margin: `${spacing.sm}px 0 0 0`,
+                lineHeight: 1.5,
+              }}
+            >
+              Quick is live here. Type it and Timed stay with Fisher and your captures for now.
+            </p>
+          )}
         </>
       )}
     </div>

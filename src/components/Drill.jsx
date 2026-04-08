@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { colors, fonts, fontSizes, spacing, radii } from '../styles/theme';
-import { SKILL_CATEGORIES, FISHER_SCENARIOS } from '../data/fisher-scenarios';
+import { SKILL_CATEGORIES } from '../data/fisher-scenarios';
+import { ALL_SEED_SCENARIOS, supportsTier } from '../data/all-scenarios';
 import { getCapturedScenarios } from '../utils/storage';
 import { isApiConfigured } from '../utils/claudeApi';
 import { previewCaptureCount } from '../utils/dailyDrill';
@@ -41,11 +42,13 @@ export default function Drill({ onStart, onDailyDrill, onCapture, capturedCount 
   const drillNeedsApi = !apiOk;
   const showApiWarning = !apiOk;
   const drillCaptureCount = previewCaptureCount();
-  const allCount = FISHER_SCENARIOS.length + capturedCount;
+  const allCount = ALL_SEED_SCENARIOS.length + capturedCount;
 
   // Merge seeds + captures once so the skill grid can count both.
   const captured = getCapturedScenarios();
-  const allScenarios = [...FISHER_SCENARIOS, ...captured];
+  const allScenarios = [...ALL_SEED_SCENARIOS, ...captured];
+  const tierEligible = allScenarios.filter((scenario) => supportsTier(scenario, tier));
+  const allDisabled = tierEligible.length === 0 || tierNeedsApi;
 
   return (
     <div style={{ padding: `${spacing.xl}px 20px ${spacing.lg}px 20px` }}>
@@ -262,35 +265,48 @@ export default function Drill({ onStart, onDailyDrill, onCapture, capturedCount 
         >
           {tierBlurb}
         </p>
+        {(tier === 'tier2' || tier === 'tier3') && (
+          <p
+            style={{
+              fontFamily: fonts.sans,
+              fontSize: fontSizes.label,
+              color: colors.textDim,
+              margin: `${spacing.sm}px 0 0 0`,
+              lineHeight: 1.5,
+            }}
+          >
+            Open-text tiers currently use Fisher plus your captures.
+          </p>
+        )}
       </div>
 
       {/* All scenarios — text-link styling */}
       <button
         onClick={() => onStart(null, tier)}
-        disabled={tierNeedsApi}
+        disabled={allDisabled}
         style={{
           width: '100%',
           padding: '12px 16px',
           background: 'transparent',
-          color: tierNeedsApi ? colors.textDim : colors.textCool,
+          color: allDisabled ? colors.textDim : colors.textCool,
           border: `1px dashed ${colors.border}`,
           borderRadius: radii.md,
           fontSize: fontSizes.body,
           fontFamily: fonts.sans,
           fontWeight: 500,
-          cursor: tierNeedsApi ? 'not-allowed' : 'pointer',
+          cursor: allDisabled ? 'not-allowed' : 'pointer',
           marginBottom: spacing.lg,
           transition: 'border-color 0.15s, color 0.15s',
         }}
         onMouseOver={(e) => {
-          if (!tierNeedsApi) {
+          if (!allDisabled) {
             e.currentTarget.style.borderColor = colors.accent;
             e.currentTarget.style.color = colors.accent;
           }
         }}
         onMouseOut={(e) => {
           e.currentTarget.style.borderColor = colors.border;
-          if (!tierNeedsApi) e.currentTarget.style.color = colors.textCool;
+          if (!allDisabled) e.currentTarget.style.color = colors.textCool;
         }}
       >
         All scenarios ({allCount})
@@ -321,15 +337,16 @@ export default function Drill({ onStart, onDailyDrill, onCapture, capturedCount 
           .map((skill) => ({
             skill,
             count: allScenarios.filter((s) => s.skillCategory === skill).length,
+            tierCount: tierEligible.filter((s) => s.skillCategory === skill).length,
           }))
           .sort((a, b) => {
             if (a.count > 0 && b.count === 0) return -1;
             if (a.count === 0 && b.count > 0) return 1;
             return 0;
           })
-          .map(({ skill, count }) => {
+          .map(({ skill, count, tierCount }) => {
             const empty = count === 0;
-            const disabled = tierNeedsApi || empty;
+            const disabled = empty || tierCount === 0 || tierNeedsApi;
             return (
               <button
                 key={skill}
