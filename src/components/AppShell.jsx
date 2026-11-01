@@ -4,15 +4,18 @@ import IconHome from './icons/IconHome';
 import IconDrill from './icons/IconDrill';
 import IconResponses from './icons/IconResponses';
 import IconDashboard from './icons/IconDashboard';
+import IconDo from './icons/IconDo';
 import Home from './Home';
 import Drill from './Drill';
 import Responses from './Responses';
 import Dashboard from './Dashboard';
+import Do from './Do';
 
 // Bottom-nav shell. Owns the active tab and renders one of the four
 // tab screens above a fixed bottom nav. The practice / capture / results
 // overlays are still owned by App.jsx and render full-bleed above this shell.
 const TABS = [
+  { id: 'do', label: 'Do', Icon: IconDo },
   { id: 'home', label: 'Home', Icon: IconHome },
   { id: 'drill', label: 'Drill', Icon: IconDrill },
   { id: 'responses', label: 'Responses', Icon: IconResponses },
@@ -20,11 +23,12 @@ const TABS = [
 ];
 
 export default function AppShell({ onStart, onDailyDrill, onCapture }) {
-  const [tab, setTab] = useState('home');
+  const [tab, setTab] = useState('do');
 
   return (
     <div style={{ minHeight: '100vh', background: colors.bg, paddingBottom: 88 }}>
       <div style={{ maxWidth: 480, margin: '0 auto' }}>
+        {tab === 'do' && <Do />}
         {tab === 'home' && (
           <Home
             onStart={onStart}
