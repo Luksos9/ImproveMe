@@ -255,3 +255,33 @@ The user chose to train this as "${skillCategory}". Generate the structured scen
     idealResponse: parsed.idealResponse || '',
   };
 }
+
+// Shrink a custom action into a smaller and a tiny version for the Do tab.
+// Returns: { small, tiny }. Throws on API failure; callers fall back to genericLevels.
+export async function shrinkAction({ text }) {
+  const client = getClient();
+
+  const message = await client.messages.create({
+    model: 'claude-haiku-4-5-20251001',
+    max_tokens: 200,
+    system: `You help with behavioral activation. The user feels stuck and cannot start a task. Shrink it into two smaller versions that still move them toward the same outcome.
+- small: about 10-15 minutes of effort.
+- tiny: under 2 minutes, so easy it feels silly to refuse. A physical first step, not a thought.
+Keep each under 10 words, imperative voice, same language as the input.
+Respond with valid JSON only: {"small": "...", "tiny": "..."}`,
+    messages: [{ role: 'user', content: text.trim() }],
+  });
+
+  const raw = message.content
+    .filter((block) => block.type === 'text')
+    .map((block) => block.text)
+    .join('')
+    .trim()
+    .replace(/^```(?:json)?\s*/i, '')
+    .replace(/\s*```$/i, '')
+    .trim();
+
+  const parsed = JSON.parse(raw);
+  if (!parsed.small || !parsed.tiny) throw new Error('Shrink response missing fields.');
+  return { small: parsed.small, tiny: parsed.tiny };
+}
