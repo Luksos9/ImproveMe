@@ -1,8 +1,8 @@
 // Storage for the Do tab (behavioral activation log).
 // Shape:
 // {
-//   log:   [{ id, actionId, label, area, identity, size, points, isFrog, moodBefore, moodAfter, at }],
-//   frogs: { 'YYYY-MM-DD': { label, area, levels, done } }
+//   log:   [{ id, label, isFrog, moodBefore, moodAfter, at }],
+//   frogs: { 'YYYY-MM-DD': { label, done } }
 // }
 
 const STORAGE_KEY = 'improveme.do';
@@ -69,20 +69,11 @@ export function removeAction(id) {
   return state;
 }
 
-export function setTodayFrog(frog) {
+export function setTodayFrog(label) {
   const state = getDoState();
   const key = todayKey();
-  if (frog) state.frogs[key] = { ...frog, done: false };
+  if (label) state.frogs[key] = { label, done: false };
   else delete state.frogs[key];
   writeState(state);
   return state;
-}
-
-// Ember level grows with total points and never goes down.
-export function levelFor(points) {
-  return Math.floor(Math.sqrt(points / 10)) + 1;
-}
-
-export function pointsForLevel(level) {
-  return (level - 1) ** 2 * 10;
 }
